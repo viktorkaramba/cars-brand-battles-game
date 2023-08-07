@@ -18,14 +18,22 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	api := router.Group("/api")
 	{
-		lists := api.Group("/lists")
+		brands := api.Group("/brands")
 		{
-			lists.POST("/", h.createBrand)
-			lists.GET("/", h.getAllBrands)
-			lists.GET("/random", h.getBrandByRandom)
-			lists.GET("/:id", h.getBrandById)
-			lists.PUT("/:id", h.updateBrand)
-			lists.DELETE("/:id", h.deleteBrand)
+			brands.POST("/", h.createBrand)
+			brands.GET("/", h.getAllBrands)
+			brands.GET("/random", h.getBrandByRandom)
+			brands.GET("/:id", h.getBrandById)
+			brands.PUT("/:id", h.updateBrand)
+			brands.DELETE("/:id", h.deleteBrand)
+		}
+		battles := api.Group("/battles")
+		{
+			battles.POST("/")
+			battles.GET("/")
+			battles.GET("/:id")
+			battles.PUT("/:id")
+			battles.DELETE("/:id")
 		}
 	}
 	return router
