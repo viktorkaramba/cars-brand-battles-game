@@ -16,6 +16,12 @@ func NewHandler(services *service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
+	auth := router.Group("/auth")
+	{
+		auth.POST("/sign-up", h.signUp)
+		auth.POST("/sign-in", h.signIn)
+	}
+
 	api := router.Group("/api")
 	{
 		brands := api.Group("/brands")
@@ -29,11 +35,19 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		}
 		battles := api.Group("/battles")
 		{
-			battles.POST("/")
-			battles.GET("/")
-			battles.GET("/:id")
-			battles.PUT("/:id")
-			battles.DELETE("/:id")
+			battles.POST("/", h.createBattle)
+			battles.GET("/", h.getAllBattles)
+			battles.GET("/:id", h.getBattleById)
+			battles.PUT("/:id", h.updateBattle)
+			battles.DELETE("/:id", h.deleteBattle)
+		}
+		scores := api.Group("/scores")
+		{
+			scores.POST("/", h.createScore)
+			scores.GET("/", h.getAllScore)
+			scores.GET("/:id", h.getScoreById)
+			scores.PUT("/:id", h.updateScore)
+			scores.DELETE("/:id", h.deleteScore)
 		}
 	}
 	return router
