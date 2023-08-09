@@ -22,7 +22,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/sign-in", h.signIn)
 	}
 
-	api := router.Group("/api")
+	api := router.Group("/api", h.userIdentity)
 	{
 		brands := api.Group("/brands")
 		{
@@ -43,7 +43,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		}
 		scores := api.Group("/scores")
 		{
-			scores.POST("/", h.createScore)
 			scores.GET("/", h.getAllScore)
 			scores.GET("/:id", h.getScoreById)
 			scores.PUT("/:id", h.updateScore)
