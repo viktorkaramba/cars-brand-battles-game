@@ -2,18 +2,31 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	carsBrandRandomGenerator "github.com/viktorkaramba/cars-brand-random-generator-app"
+	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
 	"net/http"
 	"strconv"
 )
 
+// @Summary Create Battle
+// @Security ApiKeyAuth
+// @Tags battles
+// @Description create battle
+// @ID create-battle
+// @Accept json
+// @Produce json
+// @Param input body carsBrandsBattle.Battle true "battle info"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/battles [post]
 func (h *Handler) createBattle(c *gin.Context) {
 	_, err := getUserId(c)
 	if err != nil {
 		return
 	}
 
-	var input carsBrandRandomGenerator.Battle
+	var input carsBrandsBattle.Battle
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -31,9 +44,21 @@ func (h *Handler) createBattle(c *gin.Context) {
 }
 
 type getAllBattleResponse struct {
-	Data []carsBrandRandomGenerator.Battle `json:data`
+	Data []carsBrandsBattle.Battle `json:data`
 }
 
+// @Summary Get All Battles
+// @Security ApiKeyAuth
+// @Tags battles
+// @Description get all battles
+// @ID get-all-battles
+// @Accept json
+// @Produce json
+// @Success 200 {object} getAllBattleResponse
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/battles [get]
 func (h *Handler) getAllBattles(c *gin.Context) {
 	_, err := getUserId(c)
 	if err != nil {
@@ -51,6 +76,19 @@ func (h *Handler) getAllBattles(c *gin.Context) {
 	})
 }
 
+// @Summary Get Battle By Id
+// @Security ApiKeyAuth
+// @Tags battles
+// @Description get battle by id
+// @ID get-battle-by-id
+// @Accept json
+// @Produce json
+// @Param id path int true "battle id"
+// @Success 200 {object} carsBrandsBattle.Battle
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/battles/{id} [get]
 func (h *Handler) getBattleById(c *gin.Context) {
 	_, err := getUserId(c)
 	if err != nil {
@@ -71,6 +109,19 @@ func (h *Handler) getBattleById(c *gin.Context) {
 	c.JSON(http.StatusOK, battle)
 }
 
+// @Summary Update Battle
+// @Security ApiKeyAuth
+// @Tags battles
+// @Description update battle
+// @ID update-battle
+// @Accept json
+// @Produce json
+// @Param id path int true "battle id"
+// @Success 200 {object} statusResponse
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/battles/{id} [put]
 func (h *Handler) updateBattle(c *gin.Context) {
 	_, err := getUserId(c)
 	if err != nil {
@@ -81,7 +132,7 @@ func (h *Handler) updateBattle(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
 		return
 	}
-	var input carsBrandRandomGenerator.UpdateBattleInput
+	var input carsBrandsBattle.UpdateBattleInput
 
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -95,6 +146,19 @@ func (h *Handler) updateBattle(c *gin.Context) {
 	c.JSON(http.StatusOK, statusResponse{"ok"})
 }
 
+// @Summary Delete Battle
+// @Security ApiKeyAuth
+// @Tags battles
+// @Description delete battle
+// @ID delete-battle
+// @Accept json
+// @Produce json
+// @Param id path int true "battle id"
+// @Success 200 {object} statusResponse
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/battles/{id} [delete]
 func (h *Handler) deleteBattle(c *gin.Context) {
 	_, err := getUserId(c)
 	if err != nil {

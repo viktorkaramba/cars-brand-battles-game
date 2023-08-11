@@ -1,4 +1,4 @@
-package carsBrandRandomGenerator
+package carsBrandsBattle
 
 import "errors"
 
@@ -9,6 +9,13 @@ type Brand struct {
 }
 
 type Battle struct {
+	Id             int `json:"id" db:"id"`
+	Player1Id      int `json:"player1Id" db:"player1id" binding:"required"`
+	Player2Id      int `json:"player2Id" db:"player2id" binding:"required"`
+	CurrentBrandId int `json:"currentBrandId" db:"currentbrandid" binding:"required"`
+}
+
+type UserBattle struct {
 	Id             int `json:"id" db:"id"`
 	Player1Id      int `json:"player1Id" db:"player1id" binding:"required"`
 	Player2Id      int `json:"player2Id" db:"player2id" binding:"required"`
@@ -37,6 +44,22 @@ type UpdateScoreInput struct {
 	UserId      *int `json:"userId"`
 	BattleId    *int `json:"battleId"`
 	PlayerScore *int `json:"playerScore"`
+}
+
+type UserInterfaceData struct {
+	BattleId        int    `json:"battleId" db:"battle_id"`
+	Player1Username string `json:"player1Username" db:"player1_username"`
+	Player2Username string `json:"player2Username" db:"player2_username"`
+	PlayerScore1    int    `json:"playerScore1" db:"player1_score"`
+	PlayerScore2    int    `json:"playerScore2" db:"player2_score"`
+	Score1Id        int    `json:"score1Id" db:"score1_id"`
+	Score2Id        int    `json:"score2Id" db:"score2_id"`
+}
+
+type UserStatistics struct {
+	UserId     int    `json:"userId" db:"id"`
+	UserName   string `json:"userName" db:"username"`
+	TotalScore int    `json:"totalScore" db:"sum"`
 }
 
 func (i UpdateBrandInput) Validate() error {

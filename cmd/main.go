@@ -1,16 +1,30 @@
 package main
 
 import (
+	"context"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
-	carsBrandRandomGenerator "github.com/viktorkaramba/cars-brand-random-generator-app"
+	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
 	"github.com/viktorkaramba/cars-brand-random-generator-app/pkg/handler"
 	"github.com/viktorkaramba/cars-brand-random-generator-app/pkg/repository"
 	"github.com/viktorkaramba/cars-brand-random-generator-app/pkg/service"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 )
+
+// @title Car Brands Battle App API
+// @version 1.0
+// @description API Server for Car Brands Battle Application
+
+// @host localhost:8000
+// @BasePath /
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 
 func main() {
 	if err := initConfig(); err != nil {
@@ -32,23 +46,24 @@ func main() {
 	}
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
-	//var brands []carsBrandRandomGenerator.Brand
-	//brands, _ = repos.Brand.GetAll()
-	//fmt.Println(brands[0].Name, err)
-	//imagePath := "download.png"
-	//imageBytes, err := readImageFile(imagePath)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//repos.Brand.Create(carsBrandRandomGenerator.Brand{
-	//	Id:         1,
-	//	Name:       "Audi",
-	//	ImageBrand: imageBytes,
-	//})
 	handlers := handler.NewHandler(services)
-	srv := new(carsBrandRandomGenerator.Server)
-	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		log.Fatalf("error occured while running http server: %s", err.Error())
+	srv := new(carsBrandsBattle.Server)
+	go func() {
+		if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+			log.Fatalf("error occured while running http server: %s", err.Error())
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		log.Fatalf("error occured on server shutting down: %s", err.Error())
+	}
+
+	if err := db.Close(); err != nil {
+		log.Fatalf("error occured on db connection close: %s", err.Error())
 	}
 }
 

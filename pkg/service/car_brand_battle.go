@@ -1,7 +1,7 @@
 package service
 
 import (
-	carsBrandRandomGenerator "github.com/viktorkaramba/cars-brand-random-generator-app"
+	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
 	"github.com/viktorkaramba/cars-brand-random-generator-app/pkg/repository"
 )
 
@@ -15,19 +15,19 @@ func NewBattleService(repo repository.Battle) *BattleService {
 	}
 }
 
-func (s *BattleService) Create(battle carsBrandRandomGenerator.Battle) (int, error) {
+func (s *BattleService) Create(battle carsBrandsBattle.Battle) (int, error) {
 	return s.repo.Create(battle)
 }
 
-func (s *BattleService) GetAll() ([]carsBrandRandomGenerator.Battle, error) {
+func (s *BattleService) GetAll() ([]carsBrandsBattle.Battle, error) {
 	return s.repo.GetAll()
 }
 
-func (s *BattleService) GetById(id int) (carsBrandRandomGenerator.Battle, error) {
+func (s *BattleService) GetById(id int) (carsBrandsBattle.Battle, error) {
 	return s.repo.GetById(id)
 }
 
-func (s *BattleService) Update(id int, battle carsBrandRandomGenerator.UpdateBattleInput) error {
+func (s *BattleService) Update(id int, battle carsBrandsBattle.UpdateBattleInput) error {
 	if err := battle.Validate(); err != nil {
 		return err
 	}

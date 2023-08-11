@@ -2,35 +2,50 @@ package repository
 
 import (
 	"github.com/jmoiron/sqlx"
-	carsBrandRandomGenerator "github.com/viktorkaramba/cars-brand-random-generator-app"
+	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
 )
 
 type Authorization interface {
-	CreateUser(user carsBrandRandomGenerator.User) (int, error)
-	GetUser(username, password string) (carsBrandRandomGenerator.User, error)
+	CreateUser(user carsBrandsBattle.User) (int, error)
+	GetUser(username, password string) (carsBrandsBattle.User, error)
 }
 
 type Brand interface {
-	Create(brand carsBrandRandomGenerator.Brand) (int, error)
-	GetAll() ([]carsBrandRandomGenerator.Brand, error)
-	GetById(id int) (carsBrandRandomGenerator.Brand, error)
-	Update(id int, brand carsBrandRandomGenerator.UpdateBrandInput) error
+	Create(brand carsBrandsBattle.Brand) (int, error)
+	GetAll() ([]carsBrandsBattle.Brand, error)
+	GetById(id int) (carsBrandsBattle.Brand, error)
+	Update(id int, brand carsBrandsBattle.UpdateBrandInput) error
 	Delete(id int) error
 }
 
 type Battle interface {
-	Create(battle carsBrandRandomGenerator.Battle) (int, error)
-	GetAll() ([]carsBrandRandomGenerator.Battle, error)
-	GetById(id int) (carsBrandRandomGenerator.Battle, error)
-	Update(id int, battle carsBrandRandomGenerator.UpdateBattleInput) error
+	Create(battle carsBrandsBattle.Battle) (int, error)
+	GetAll() ([]carsBrandsBattle.Battle, error)
+	GetById(id int) (carsBrandsBattle.Battle, error)
+	Update(id int, battle carsBrandsBattle.UpdateBattleInput) error
 	Delete(id int) error
 }
 
 type Score interface {
-	GetAll() ([]carsBrandRandomGenerator.Score, error)
-	GetById(id int) (carsBrandRandomGenerator.Score, error)
-	Update(id int, score carsBrandRandomGenerator.UpdateScoreInput) error
+	GetAll() ([]carsBrandsBattle.Score, error)
+	GetById(id int) (carsBrandsBattle.Score, error)
+	Update(id int, score carsBrandsBattle.UpdateScoreInput) error
 	Delete(id int) error
+}
+
+type User interface {
+	GetAll() ([]carsBrandsBattle.User, error)
+	GetById(id int) (carsBrandsBattle.Score, error)
+	Update(id int, score carsBrandsBattle.UpdateScoreInput) error
+	Delete(id int) error
+}
+
+type UserStatistics interface {
+	GetGeneralStatisticsByScore() ([]carsBrandsBattle.UserStatistics, error)
+}
+
+type UserInterfaceData interface {
+	GetAll() ([]carsBrandsBattle.UserInterfaceData, error)
 }
 
 type Repository struct {
@@ -38,13 +53,17 @@ type Repository struct {
 	Brand
 	Battle
 	Score
+	UserStatistics
+	UserInterfaceData
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		Authorization: NewAuthPostgres(db),
-		Battle:        NewBattlePostgres(db),
-		Brand:         NewBrandPostgres(db),
-		Score:         NewScorePostgres(db),
+		Authorization:     NewAuthPostgres(db),
+		Battle:            NewBattlePostgres(db),
+		Brand:             NewBrandPostgres(db),
+		Score:             NewScorePostgres(db),
+		UserStatistics:    NewUserStatisticsPostgres(db),
+		UserInterfaceData: NewUserInterfaceDataPostgres(db),
 	}
 }

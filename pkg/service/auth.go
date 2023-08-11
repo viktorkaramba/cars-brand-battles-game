@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	carsBrandRandomGenerator "github.com/viktorkaramba/cars-brand-random-generator-app"
+	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
 	"github.com/viktorkaramba/cars-brand-random-generator-app/pkg/repository"
 	"time"
 )
@@ -29,7 +29,7 @@ func newAuthService(repo repository.Authorization) *AuthService {
 	return &AuthService{repo: repo}
 }
 
-func (s *AuthService) CreateUser(user carsBrandRandomGenerator.User) (int, error) {
+func (s *AuthService) CreateUser(user carsBrandsBattle.User) (int, error) {
 	user.Password = generatePasswordHash(user.Password)
 	return s.repo.CreateUser(user)
 }

@@ -1,4 +1,4 @@
-package carsBrandRandomGenerator
+package carsBrandsBattle
 
 import (
 	"context"

@@ -2,6 +2,9 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
+	_ "github.com/viktorkaramba/cars-brand-random-generator-app/docs"
 	"github.com/viktorkaramba/cars-brand-random-generator-app/pkg/service"
 )
 
@@ -48,6 +51,15 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			scores.PUT("/:id", h.updateScore)
 			scores.DELETE("/:id", h.deleteScore)
 		}
+		userStatistics := api.Group("/user-statistics")
+		{
+			userStatistics.GET("/by-score", h.getGeneralUserStatisticsByScore)
+		}
+		userInterfaceData := api.Group("/user-interface-data")
+		{
+			userInterfaceData.GET("/", h.getGeneralUserInterfaceData)
+		}
 	}
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return router
 }

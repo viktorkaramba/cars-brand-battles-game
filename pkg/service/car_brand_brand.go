@@ -1,7 +1,7 @@
 package service
 
 import (
-	carsBrandRandomGenerator "github.com/viktorkaramba/cars-brand-random-generator-app"
+	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
 	"github.com/viktorkaramba/cars-brand-random-generator-app/pkg/repository"
 	"math/rand"
 	"time"
@@ -17,19 +17,19 @@ func NewBrandService(repo repository.Brand) *BrandService {
 	}
 }
 
-func (s *BrandService) Create(brand carsBrandRandomGenerator.Brand) (int, error) {
+func (s *BrandService) Create(brand carsBrandsBattle.Brand) (int, error) {
 	return s.repo.Create(brand)
 }
 
-func (s *BrandService) GetAll() ([]carsBrandRandomGenerator.Brand, error) {
+func (s *BrandService) GetAll() ([]carsBrandsBattle.Brand, error) {
 	return s.repo.GetAll()
 }
 
-func (s *BrandService) GetById(id int) (carsBrandRandomGenerator.Brand, error) {
+func (s *BrandService) GetById(id int) (carsBrandsBattle.Brand, error) {
 	return s.repo.GetById(id)
 }
 
-func (s *BrandService) GetOneByRandom() (carsBrandRandomGenerator.Brand, error) {
+func (s *BrandService) GetOneByRandom() (carsBrandsBattle.Brand, error) {
 	w := rand.NewSource(time.Now().Unix())
 	r := rand.New(w)
 	brands, err := s.GetAll()
@@ -37,7 +37,7 @@ func (s *BrandService) GetOneByRandom() (carsBrandRandomGenerator.Brand, error) 
 	return brands[value], err
 }
 
-func (s *BrandService) Update(id int, brand carsBrandRandomGenerator.UpdateBrandInput) error {
+func (s *BrandService) Update(id int, brand carsBrandsBattle.UpdateBrandInput) error {
 	if err := brand.Validate(); err != nil {
 		return err
 	}

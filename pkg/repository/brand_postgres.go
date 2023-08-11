@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	carsBrandRandomGenerator "github.com/viktorkaramba/cars-brand-random-generator-app"
+	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
 )
 
 type BrandPostgres struct {
@@ -14,7 +14,7 @@ func NewBrandPostgres(db *sqlx.DB) *BrandPostgres {
 	return &BrandPostgres{db: db}
 }
 
-func (r *BrandPostgres) Create(brand carsBrandRandomGenerator.Brand) (int, error) {
+func (r *BrandPostgres) Create(brand carsBrandsBattle.Brand) (int, error) {
 	var id int
 	query := fmt.Sprintf("INSERT INTO %s (name, imageBrand) values ($1, $2) RETURNING id", brandsTable)
 	row := r.db.QueryRow(query, brand.Name, brand.ImageBrand)
@@ -24,21 +24,21 @@ func (r *BrandPostgres) Create(brand carsBrandRandomGenerator.Brand) (int, error
 	return id, nil
 }
 
-func (r *BrandPostgres) GetAll() ([]carsBrandRandomGenerator.Brand, error) {
-	var brands []carsBrandRandomGenerator.Brand
+func (r *BrandPostgres) GetAll() ([]carsBrandsBattle.Brand, error) {
+	var brands []carsBrandsBattle.Brand
 	query := fmt.Sprintf("SELECT * FROM %s", brandsTable)
 	err := r.db.Select(&brands, query)
 	return brands, err
 }
 
-func (r *BrandPostgres) GetById(id int) (carsBrandRandomGenerator.Brand, error) {
-	var brand carsBrandRandomGenerator.Brand
+func (r *BrandPostgres) GetById(id int) (carsBrandsBattle.Brand, error) {
+	var brand carsBrandsBattle.Brand
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id= $1", brandsTable)
-	err := r.db.Select(&brand, query, id)
+	err := r.db.Get(&brand, query, id)
 	return brand, err
 }
 
-func (r *BrandPostgres) Update(id int, brand carsBrandRandomGenerator.UpdateBrandInput) error {
+func (r *BrandPostgres) Update(id int, brand carsBrandsBattle.UpdateBrandInput) error {
 	query := fmt.Sprintf("UPDATE %s SET name=$1, imageBrand=$2 WHERE id=$3", brandsTable)
 	_, err := r.db.Exec(query, brand.Name, brand.ImageBrand, id)
 	return err

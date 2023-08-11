@@ -1,4 +1,4 @@
-package carsBrandRandomGenerator
+package carsBrandsBattle
 
 type User struct {
 	Id       int    `json:"-" db:"id"`
