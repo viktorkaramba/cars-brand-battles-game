@@ -93,7 +93,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/carsBrandsBattle.Battle"
+                            "$ref": "#/definitions/carsBrandsBattleGame.Battle"
                         }
                     }
                 ],
@@ -163,7 +163,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/carsBrandsBattle.Battle"
+                            "$ref": "#/definitions/carsBrandsBattleGame.Battle"
                         }
                     },
                     "400": {
@@ -390,7 +390,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/carsBrandsBattle.Brand"
+                            "$ref": "#/definitions/carsBrandsBattleGame.Brand"
                         }
                     }
                 ],
@@ -451,7 +451,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/carsBrandsBattle.Brand"
+                            "$ref": "#/definitions/carsBrandsBattleGame.Brand"
                         }
                     },
                     "400": {
@@ -513,7 +513,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/carsBrandsBattle.Brand"
+                            "$ref": "#/definitions/carsBrandsBattleGame.Brand"
                         }
                     },
                     "400": {
@@ -748,7 +748,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/carsBrandsBattle.Score"
+                            "$ref": "#/definitions/carsBrandsBattleGame.Score"
                         }
                     },
                     "400": {
@@ -1084,7 +1084,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/carsBrandsBattle.User"
+                            "$ref": "#/definitions/carsBrandsBattleGame.User"
                         }
                     }
                 ],
@@ -1124,7 +1124,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "carsBrandsBattle.Battle": {
+        "carsBrandsBattleGame.Battle": {
             "type": "object",
             "required": [
                 "currentBrandId",
@@ -1146,7 +1146,7 @@ const docTemplate = `{
                 }
             }
         },
-        "carsBrandsBattle.Brand": {
+        "carsBrandsBattleGame.Brand": {
             "type": "object",
             "required": [
                 "imageBrand",
@@ -1167,7 +1167,7 @@ const docTemplate = `{
                 }
             }
         },
-        "carsBrandsBattle.Score": {
+        "carsBrandsBattleGame.Score": {
             "type": "object",
             "required": [
                 "battleId",
@@ -1189,7 +1189,7 @@ const docTemplate = `{
                 }
             }
         },
-        "carsBrandsBattle.User": {
+        "carsBrandsBattleGame.User": {
             "type": "object",
             "required": [
                 "name",
@@ -1208,7 +1208,7 @@ const docTemplate = `{
                 }
             }
         },
-        "carsBrandsBattle.UserInterfaceData": {
+        "carsBrandsBattleGame.UserInterfaceData": {
             "type": "object",
             "properties": {
                 "battleId": {
@@ -1234,7 +1234,7 @@ const docTemplate = `{
                 }
             }
         },
-        "carsBrandsBattle.UserStatistics": {
+        "carsBrandsBattleGame.UserStatistics": {
             "type": "object",
             "properties": {
                 "totalScore": {
@@ -1262,7 +1262,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/carsBrandsBattle.Battle"
+                        "$ref": "#/definitions/carsBrandsBattleGame.Battle"
                     }
                 }
             }
@@ -1273,7 +1273,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/carsBrandsBattle.Brand"
+                        "$ref": "#/definitions/carsBrandsBattleGame.Brand"
                     }
                 }
             }
@@ -1284,7 +1284,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/carsBrandsBattle.Score"
+                        "$ref": "#/definitions/carsBrandsBattleGame.Score"
                     }
                 }
             }
@@ -1295,7 +1295,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/carsBrandsBattle.UserInterfaceData"
+                        "$ref": "#/definitions/carsBrandsBattleGame.UserInterfaceData"
                     }
                 }
             }
@@ -1306,7 +1306,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/carsBrandsBattle.UserStatistics"
+                        "$ref": "#/definitions/carsBrandsBattleGame.UserStatistics"
                     }
                 }
             }

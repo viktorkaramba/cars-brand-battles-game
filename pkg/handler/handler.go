@@ -23,10 +23,16 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		auth.POST("/sign-up", h.signUp)
 		auth.POST("/sign-in", h.signIn)
+		auth.POST("logout", h.logout)
 	}
 
 	api := router.Group("/api", h.userIdentity)
 	{
+
+		users := api.Group("/users")
+		{
+			users.GET("/:username", h.getUserByUsername)
+		}
 		brands := api.Group("/brands")
 		{
 			brands.POST("/", h.createBrand)
@@ -58,8 +64,15 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		userInterfaceData := api.Group("/user-interface-data")
 		{
 			userInterfaceData.GET("/", h.getGeneralUserInterfaceData)
+			userInterfaceData.GET("/:id", h.getGeneralUserInterfaceDataByBattleId)
+		}
+		userHistory := api.Group("/users-history")
+		{
+			userHistory.GET("/", h.getAllUsersHistory)
+			userHistory.GET("/:id", h.getUsersHistoryByBattleId)
 		}
 	}
+	router.POST("/refresh-token", h.refreshToken)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return router
 }

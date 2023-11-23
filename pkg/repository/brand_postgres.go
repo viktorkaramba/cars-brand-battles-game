@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
+	"strings"
 )
 
 type BrandPostgres struct {
@@ -26,21 +27,43 @@ func (r *BrandPostgres) Create(brand carsBrandsBattle.Brand) (int, error) {
 
 func (r *BrandPostgres) GetAll() ([]carsBrandsBattle.Brand, error) {
 	var brands []carsBrandsBattle.Brand
-	query := fmt.Sprintf("SELECT * FROM %s", brandsTable)
+	query := fmt.Sprintf("SELECT * FROM %s ORDER BY id ASC ", brandsTable)
 	err := r.db.Select(&brands, query)
 	return brands, err
 }
 
-func (r *BrandPostgres) GetById(id int) (carsBrandsBattle.Brand, error) {
+func (r *BrandPostgres) GetById(id int) (*carsBrandsBattle.Brand, error) {
 	var brand carsBrandsBattle.Brand
-	query := fmt.Sprintf("SELECT * FROM %s WHERE id= $1", brandsTable)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id= $1 ORDER BY id ASC ", brandsTable)
 	err := r.db.Get(&brand, query, id)
-	return brand, err
+	if brand == (carsBrandsBattle.Brand{}) {
+		return &carsBrandsBattle.Brand{}, nil
+	}
+	return &brand, err
 }
 
 func (r *BrandPostgres) Update(id int, brand carsBrandsBattle.UpdateBrandInput) error {
-	query := fmt.Sprintf("UPDATE %s SET name=$1, imageBrand=$2 WHERE id=$3", brandsTable)
-	_, err := r.db.Exec(query, brand.Name, brand.ImageBrand, id)
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+
+	if brand.Name != nil {
+		setValues = append(setValues, fmt.Sprintf("name=$%d", argId))
+		args = append(args, *brand.Name)
+		argId++
+	}
+
+	if brand.ImageBrand != nil {
+		setValues = append(setValues, fmt.Sprintf("imageBrand=$%d", argId))
+		args = append(args, *brand.ImageBrand)
+		argId++
+	}
+
+	setQuery := strings.Join(setValues, ", ")
+
+	query := fmt.Sprintf("UPDATE %s b SET %s WHERE b.id=$%d", brandsTable, setQuery, argId)
+	args = append(args, id)
+	_, err := r.db.Exec(query, args...)
 	return err
 }
 

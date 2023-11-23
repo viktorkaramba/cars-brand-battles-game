@@ -14,7 +14,7 @@ import (
 // @ID create-brand
 // @Accept json
 // @Produce json
-// @Param input body carsBrandsBattle.Brand true "brand info"
+// @Param input body carsBrandsBattleGame.Brand true "brand info"
 // @Success 200 {integer} integer 1
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
@@ -84,7 +84,7 @@ func (h *Handler) getAllBrands(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path int true "brand id"
-// @Success 200 {object} carsBrandsBattle.Brand
+// @Success 200 {object} carsBrandsBattleGame.Brand
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
@@ -116,7 +116,7 @@ func (h *Handler) getBrandById(c *gin.Context) {
 // @ID get-random-brand
 // @Accept json
 // @Produce json
-// @Success 200 {object} carsBrandsBattle.Brand
+// @Success 200 {object} carsBrandsBattleGame.Brand
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse

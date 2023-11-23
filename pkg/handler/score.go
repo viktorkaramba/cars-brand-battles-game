@@ -48,7 +48,7 @@ func (h *Handler) getAllScore(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path int true "score id"
-// @Success 200 {object} carsBrandsBattle.Score
+// @Success 200 {object} carsBrandsBattleGame.Score
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse

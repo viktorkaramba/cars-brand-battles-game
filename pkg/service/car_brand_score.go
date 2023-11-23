@@ -19,7 +19,7 @@ func (s *ScoreService) GetAll() ([]carsBrandsBattle.Score, error) {
 	return s.repo.GetAll()
 }
 
-func (s *ScoreService) GetById(id int) (carsBrandsBattle.Score, error) {
+func (s *ScoreService) GetById(id int) (*carsBrandsBattle.Score, error) {
 	return s.repo.GetById(id)
 }
 

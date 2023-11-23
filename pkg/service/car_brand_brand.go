@@ -25,7 +25,7 @@ func (s *BrandService) GetAll() ([]carsBrandsBattle.Brand, error) {
 	return s.repo.GetAll()
 }
 
-func (s *BrandService) GetById(id int) (carsBrandsBattle.Brand, error) {
+func (s *BrandService) GetById(id int) (*carsBrandsBattle.Brand, error) {
 	return s.repo.GetById(id)
 }
 

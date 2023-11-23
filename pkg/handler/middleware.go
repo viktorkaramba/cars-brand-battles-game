@@ -13,26 +13,28 @@ const (
 )
 
 func (h *Handler) userIdentity(c *gin.Context) {
-	header := c.GetHeader(authorizationHeader)
-	if header == "" {
-		newErrorResponse(c, http.StatusUnauthorized, "empty auth header")
-		return
-	}
-
-	headerParts := strings.Split(header, " ")
-	if len(headerParts) != 2 {
-		newErrorResponse(c, http.StatusUnauthorized, "invalid auth header")
-		return
-	}
-
-	userId, err := h.services.Authorization.ParseToken(headerParts[1])
+	token, err := checkHeaderToken(c)
 	if err != nil {
 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return
 	}
-
+	isRevoked, err := h.checkIsRevoked(token)
+	if err != nil {
+		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+	if isRevoked {
+		newErrorResponse(c, http.StatusForbidden, "invalid permission")
+		return
+	}
+	userId, err := h.services.Authorization.ParseToken(token)
+	if err != nil {
+		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		return
+	}
 	c.Set(userCtx, userId)
 }
+
 func getUserId(c *gin.Context) (int, error) {
 	id, ok := c.Get(userCtx)
 	if !ok {
@@ -46,4 +48,33 @@ func getUserId(c *gin.Context) (int, error) {
 	}
 
 	return idInt, nil
+}
+
+func checkHeaderToken(c *gin.Context) (string, error) {
+	header := c.GetHeader(authorizationHeader)
+	if header == "" {
+		return "", errors.New("empty auth header")
+	}
+
+	headerParts := strings.Split(header, " ")
+	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
+		return "", errors.New("invalid auth header")
+	}
+
+	if len(headerParts[1]) == 0 {
+		return "", errors.New("token is empty")
+	}
+	return headerParts[1], nil
+}
+
+func (h *Handler) checkIsRevoked(tokenValue string) (bool, error) {
+	token, err := h.services.Tokens.GetByToken(tokenValue)
+	if err != nil {
+		return true, err
+	}
+	if token.Revoked {
+		return true, nil
+	} else {
+		return false, nil
+	}
 }

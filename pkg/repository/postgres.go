@@ -10,6 +10,7 @@ const (
 	brandsTable  = "brands"
 	battlesTable = "battles"
 	scoresTable  = "scores"
+	tokensTable  = "tokens"
 )
 
 type Config struct {

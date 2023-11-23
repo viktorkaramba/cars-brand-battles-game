@@ -15,6 +15,10 @@ func NewUserInterfaceDataService(repo repository.UserInterfaceData) *UserInterfa
 	}
 }
 
-func (s *UserInterfaceDataService) GetAll() ([]carsBrandsBattle.UserInterfaceData, error) {
-	return s.repo.GetAll()
+func (s *UserInterfaceDataService) GetAll(isFinished bool) ([]carsBrandsBattle.UserInterfaceData, error) {
+	return s.repo.GetAll(isFinished)
+}
+
+func (s *UserInterfaceDataService) GetById(battleId int, isFinished bool) (*carsBrandsBattle.UserInterfaceData, error) {
+	return s.repo.GetById(battleId, isFinished)
 }

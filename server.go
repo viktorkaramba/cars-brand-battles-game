@@ -1,4 +1,4 @@
-package carsBrandsBattle
+package carsBrandsBattleGame
 
 import (
 	"context"

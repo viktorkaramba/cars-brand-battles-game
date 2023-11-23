@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
 	"net/http"
@@ -14,13 +15,14 @@ import (
 // @ID create-battle
 // @Accept json
 // @Produce json
-// @Param input body carsBrandsBattle.Battle true "battle info"
+// @Param input body carsBrandsBattleGame.Battle true "battle info"
 // @Success 200 {integer} integer 1
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /api/battles [post]
 func (h *Handler) createBattle(c *gin.Context) {
+	fmt.Println("in")
 	_, err := getUserId(c)
 	if err != nil {
 		return
@@ -31,7 +33,6 @@ func (h *Handler) createBattle(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-
 	id, err := h.services.Battle.Create(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -84,7 +85,7 @@ func (h *Handler) getAllBattles(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path int true "battle id"
-// @Success 200 {object} carsBrandsBattle.Battle
+// @Success 200 {object} carsBrandsBattleGame.Battle
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse

@@ -6,25 +6,25 @@ import (
 	"strconv"
 )
 
-// @Summary Get General User Interface Data
+// @Summary Get All User History
 // @Security ApiKeyAuth
-// @Tags userInterfaceData
-// @Description get user interface data
-// @ID get-user-interface-data
+// @Tags userHistory
+// @Description get users history
+// @ID get-user-history
 // @Accept json
 // @Produce json
 // @Success 200 {object} UserInterfaceData
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
-// @Router /api/user-interface-data [get]
-func (h *Handler) getGeneralUserInterfaceData(c *gin.Context) {
+// @Router /api/users-history [get]
+func (h *Handler) getAllUsersHistory(c *gin.Context) {
 	_, err := getUserId(c)
 	if err != nil {
 		return
 	}
 
-	userInterfaceData, err := h.services.UserInterfaceData.GetAll(false)
+	userInterfaceData, err := h.services.UserInterfaceData.GetAll(true)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -33,20 +33,19 @@ func (h *Handler) getGeneralUserInterfaceData(c *gin.Context) {
 	c.JSON(http.StatusOK, userInterfaceData)
 }
 
-// @Summary Get General User Interface Data by Battle ID
+// @Summary Get User History By BattleId
 // @Security ApiKeyAuth
-// @Tags userInterfaceData
-// @Description get user interface data by battle id
-// @ID get-user-interface-data
+// @Tags userHistoryByBattleID
+// @Description get users history by battleId
+// @ID get-user-history-by-battle-id
 // @Accept json
 // @Produce json
-// @Param id path int true "battle id"
-// @Success 200 {object} Battle
+// @Success 200 {object} UserInterfaceData
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
-// @Router /api/user-interface-data/{id} [get]
-func (h *Handler) getGeneralUserInterfaceDataByBattleId(c *gin.Context) {
+// @Router /api/users-history/{id} [get]
+func (h *Handler) getUsersHistoryByBattleId(c *gin.Context) {
 	_, err := getUserId(c)
 	if err != nil {
 		return
@@ -57,7 +56,7 @@ func (h *Handler) getGeneralUserInterfaceDataByBattleId(c *gin.Context) {
 		return
 	}
 
-	userInterfaceData, err := h.services.UserInterfaceData.GetById(id, false)
+	userInterfaceData, err := h.services.UserInterfaceData.GetById(id, true)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return

@@ -34,7 +34,5 @@ func (h *Handler) getGeneralUserStatisticsByScore(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, getGeneralUserStatisticsByScoreResponse{
-		Data: userStatistics,
-	})
+	c.JSON(http.StatusOK, userStatistics)
 }

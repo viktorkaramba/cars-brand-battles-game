@@ -25,7 +25,7 @@ type AuthService struct {
 	repo repository.Authorization
 }
 
-func newAuthService(repo repository.Authorization) *AuthService {
+func NewAuthService(repo repository.Authorization) *AuthService {
 	return &AuthService{repo: repo}
 }
 
@@ -34,10 +34,14 @@ func (s *AuthService) CreateUser(user carsBrandsBattle.User) (int, error) {
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) GenerateToken(username, password string) (string, error) {
+func (s *AuthService) GetUserByUsername(username string) (*carsBrandsBattle.User, error) {
+	return s.repo.GetUserByUsername(username)
+}
+
+func (s *AuthService) GenerateToken(username, password string) (*carsBrandsBattle.User, string, error) {
 	user, err := s.repo.GetUser(username, generatePasswordHash(password))
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		StandardClaims: jwt.StandardClaims{
@@ -46,7 +50,20 @@ func (s *AuthService) GenerateToken(username, password string) (string, error) {
 		},
 		UserId: user.Id,
 	})
-	return token.SignedString([]byte(signingKey))
+	tokenSigned, err := token.SignedString([]byte(signingKey))
+	return user, tokenSigned, err
+}
+
+func (s *AuthService) RefreshToken(userId int) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+		UserId: userId,
+	})
+	tokenSigned, err := token.SignedString([]byte(signingKey))
+	return tokenSigned, err
 }
 
 func (s *AuthService) ParseToken(accessToken string) (int, error) {
