@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"fmt"
+	"bytes"
 	"github.com/gin-gonic/gin"
 	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -22,15 +23,22 @@ import (
 // @Failure default {object} errorResponse
 // @Router /api/battles [post]
 func (h *Handler) createBattle(c *gin.Context) {
-	fmt.Println("in")
 	_, err := getUserId(c)
 	if err != nil {
 		return
 	}
 
+	body, _ := io.ReadAll(c.Request.Body)
+	c.Request.Body = io.NopCloser(bytes.NewBuffer(body))
+	// Check if there are any additional fields in the JSON body
+	if err := h.validateJSONTags(body, carsBrandsBattle.Battle{}); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
 	var input carsBrandsBattle.Battle
 	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, "invalid input body")
 		return
 	}
 	id, err := h.services.Battle.Create(input)
@@ -42,10 +50,6 @@ func (h *Handler) createBattle(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"id": id,
 	})
-}
-
-type getAllBattleResponse struct {
-	Data []carsBrandsBattle.Battle `json:data`
 }
 
 // @Summary Get All Battles
@@ -72,9 +76,7 @@ func (h *Handler) getAllBattles(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, getAllBattleResponse{
-		Data: battles,
-	})
+	c.JSON(http.StatusOK, battles)
 }
 
 // @Summary Get Battle By Id
@@ -133,14 +135,8 @@ func (h *Handler) updateBattle(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
 		return
 	}
-	var input carsBrandsBattle.UpdateBattleInput
 
-	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	if err := h.services.Battle.Update(id, input); err != nil {
+	if err := h.services.Battle.Update(id); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -172,7 +168,7 @@ func (h *Handler) deleteBattle(c *gin.Context) {
 	}
 
 	if err := h.services.Battle.Delete(id); err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "invalid input body")
 		return
 	}
 	c.JSON(http.StatusOK, statusResponse{"ok"})

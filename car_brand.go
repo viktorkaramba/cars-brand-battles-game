@@ -9,12 +9,12 @@ type Brand struct {
 }
 
 type Battle struct {
-	Id             int    `json:"id" db:"id"`
-	Player1Id      int    `json:"player1Id" db:"player1id" binding:"required"`
-	Player2Id      int    `json:"player2Id" db:"player2id" binding:"required"`
-	Punishment     string `json:"punishment" db:"punishment" binding:"required"`
-	IsFinished     bool   `json:"isFinished" db:"isfinished"`
-	CurrentBrandId int    `json:"currentBrandId" db:"currentbrandid" binding:"required"`
+	Id             *int    `json:"id" db:"id"`
+	Player1Id      *int    `json:"player1Id" db:"player1id" binding:"required"`
+	Player2Id      *int    `json:"player2Id" db:"player2id" binding:"required"`
+	Punishment     *string `json:"punishment" db:"punishment" binding:"required"`
+	IsFinished     *bool   `json:"isFinished" db:"isfinished"`
+	CurrentBrandId *int    `json:"currentBrandId" db:"currentbrandid" binding:"required"`
 }
 
 type Score struct {
@@ -26,7 +26,7 @@ type Score struct {
 
 type Token struct {
 	Id         int    `json:"id" db:"id"`
-	TokenValue string `json:"tokenValue" db:"tokenvalue"`
+	TokenValue string `json:"tokenValue" db:"tokenvalue" binding:"required"`
 	Revoked    bool   `json:"revoked" db:"revoked"`
 	UserId     int    `json:"userId" db:"userid"`
 }
@@ -45,9 +45,8 @@ type UpdateBattleInput struct {
 }
 
 type UpdateScoreInput struct {
-	UserId      *int `json:"userId"`
-	BattleId    *int `json:"battleId"`
-	PlayerScore *int `json:"playerScore"`
+	UserId   *int `json:"userId"`
+	BattleId *int `json:"battleId"`
 }
 
 type UpdateTokenInput struct {
@@ -57,25 +56,25 @@ type UpdateTokenInput struct {
 }
 
 type UserInterfaceData struct {
-	BattleId        int    `json:"battleId" db:"battle_id"`
-	Player1Username string `json:"player1Username" db:"player1_username"`
-	Player2Username string `json:"player2Username" db:"player2_username"`
-	PlayerScore1    int    `json:"playerScore1" db:"player1_score"`
-	PlayerScore2    int    `json:"playerScore2" db:"player2_score"`
-	Score1Id        int    `json:"score1Id" db:"score1_id"`
-	Score2Id        int    `json:"score2Id" db:"score2_id"`
-	Punishment      string `json:"punishment" db:"brandpunishment"`
-	BrandName       string `json:"brandName" db:"brandname"`
+	BattleId        int    `json:"battleId" db:"battle_id" binding:"required"`
+	Player1Username string `json:"player1Username" db:"player1_username" binding:"required"`
+	Player2Username string `json:"player2Username" db:"player2_username" binding:"required"`
+	PlayerScore1    int    `json:"playerScore1" db:"player1_score" binding:"required"`
+	PlayerScore2    int    `json:"playerScore2" db:"player2_score" binding:"required"`
+	Score1Id        int    `json:"score1Id" db:"score1_id" binding:"required"`
+	Score2Id        int    `json:"score2Id" db:"score2_id" binding:"required"`
+	Punishment      string `json:"punishment" db:"brandpunishment" binding:"required"`
+	BrandName       string `json:"brandName" db:"brandname" binding:"required"`
 }
 
 type UserStatistics struct {
-	UserId     int    `json:"userId" db:"id"`
-	Username   string `json:"username" db:"username"`
-	TotalScore int    `json:"totalScore" db:"sum"`
+	UserId     int    `json:"userId" db:"id" binding:"required"`
+	Username   string `json:"username" db:"username" binding:"required"`
+	TotalScore int    `json:"totalScore" db:"sum" binding:"required"`
 }
 
 type RefreshTokenInput struct {
-	UserId int `json:"userId"`
+	UserId int `json:"userId" binding:"required"`
 }
 
 func (i UpdateBrandInput) Validate() error {
@@ -93,7 +92,7 @@ func (i UpdateBattleInput) Validate() error {
 }
 
 func (i UpdateScoreInput) Validate() error {
-	if i.UserId == nil && i.BattleId == nil && i.PlayerScore == nil {
+	if i.UserId == nil && i.BattleId == nil {
 		return errors.New("update structure has no value")
 	}
 	return nil

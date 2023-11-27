@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
-	"strconv"
-	"strings"
 )
 
 type BattlePostgres struct {
@@ -24,8 +22,7 @@ func (r *BattlePostgres) Create(battle carsBrandsBattle.Battle) (int, error) {
 	var id int
 	var battleId int
 	createBattle := fmt.Sprintf("INSERT INTO %s (player1Id, player2Id, punishment, isFinished, currentBrandId) values ($1, $2, $3, $4, $5) RETURNING id", battlesTable)
-	isFinished := strconv.FormatBool(battle.IsFinished)
-	row := r.db.QueryRow(createBattle, battle.Player1Id, battle.Player2Id, battle.Punishment, isFinished, battle.CurrentBrandId)
+	row := r.db.QueryRow(createBattle, battle.Player1Id, battle.Player2Id, battle.Punishment, false, battle.CurrentBrandId)
 	if err := row.Scan(&id); err != nil {
 		tx.Rollback()
 		return 0, err
@@ -63,46 +60,10 @@ func (r *BattlePostgres) GetById(id int) (*carsBrandsBattle.Battle, error) {
 	return &battle, err
 }
 
-func (r *BattlePostgres) Update(id int, battle carsBrandsBattle.UpdateBattleInput) error {
-	setValues := make([]string, 0)
-	args := make([]interface{}, 0)
-	argId := 1
+func (r *BattlePostgres) Update(id int) error {
 
-	if battle.Player1Id != nil {
-		setValues = append(setValues, fmt.Sprintf("player1Id=$%d", argId))
-		args = append(args, *battle.Player1Id)
-		argId++
-	}
-
-	if battle.Player2Id != nil {
-		setValues = append(setValues, fmt.Sprintf("player2Id=$%d", argId))
-		args = append(args, *battle.Player2Id)
-		argId++
-	}
-
-	if battle.Punishment != nil {
-		setValues = append(setValues, fmt.Sprintf("punishment=$%d", argId))
-		args = append(args, *battle.Punishment)
-		argId++
-	}
-
-	if battle.IsFinished != nil {
-		setValues = append(setValues, fmt.Sprintf("isFinished=$%d", argId))
-		args = append(args, *battle.IsFinished)
-		argId++
-	}
-
-	if battle.CurrentBrandId != nil {
-		setValues = append(setValues, fmt.Sprintf("currentBrandId=$%d", argId))
-		args = append(args, *battle.CurrentBrandId)
-		argId++
-	}
-
-	setQuery := strings.Join(setValues, ", ")
-
-	query := fmt.Sprintf("UPDATE %s b SET %s WHERE b.id=$%d", battlesTable, setQuery, argId)
-	args = append(args, id)
-	_, err := r.db.Exec(query, args...)
+	query := fmt.Sprintf("UPDATE %s b SET isFinished='true' WHERE b.id=$1", battlesTable)
+	_, err := r.db.Exec(query, id)
 	return err
 }
 

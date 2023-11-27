@@ -5,14 +5,13 @@ import (
 )
 
 type errorResponse struct {
-	Message string `json: "message"`
+	Error *string `json:"error" binding:"required"`
 }
 
 type statusResponse struct {
-	Status string `json:"status"`
+	Status string `json:"status" binding:"required"`
 }
 
 func newErrorResponse(c *gin.Context, statusCode int, message string) {
-	//log.Fatal(message)
-	c.AbortWithStatusJSON(statusCode, errorResponse{message})
+	c.AbortWithStatusJSON(statusCode, errorResponse{Error: &message})
 }

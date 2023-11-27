@@ -1,9 +1,12 @@
 package handler
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"reflect"
 	"strings"
 )
 
@@ -33,6 +36,45 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		return
 	}
 	c.Set(userCtx, userId)
+}
+
+// Function to validate JSON tags against the structure
+func (h *Handler) validateJSONTags(body []byte, input interface{}) error {
+
+	// Parse the JSON body into a map
+	jsonMap := make(map[string]interface{})
+	err := json.Unmarshal(body, &jsonMap)
+	if err != nil {
+		return err
+	}
+	structType := reflect.TypeOf(input)
+
+	// Iterate through the fields of the struct
+	for i := 0; i < structType.NumField(); i++ {
+		field := structType.Field(i)
+
+		// Get the JSON tag value for the field
+		tagValue := field.Tag.Get("json")
+		if _, ok := jsonMap["id"]; ok {
+			return fmt.Errorf("invalid JSON tags: id")
+		}
+		// Check if the JSON tag is not empty
+		if tagValue != "" {
+			// Check if the field exists in the struct
+			if _, ok := jsonMap[tagValue]; ok {
+				delete(jsonMap, tagValue)
+			}
+		}
+	}
+	if len(jsonMap) != 0 {
+		var errorTags []string
+		for key := range jsonMap {
+			errorTags = append(errorTags, key)
+		}
+
+		return fmt.Errorf("invalid JSON tags: %s", strings.Join(errorTags[:], ", "))
+	}
+	return nil
 }
 
 func getUserId(c *gin.Context) (int, error) {

@@ -23,11 +23,8 @@ func (s *ScoreService) GetById(id int) (*carsBrandsBattle.Score, error) {
 	return s.repo.GetById(id)
 }
 
-func (s *ScoreService) Update(id int, score carsBrandsBattle.UpdateScoreInput) error {
-	if err := score.Validate(); err != nil {
-		return err
-	}
-	return s.repo.Update(id, score)
+func (s *ScoreService) Update(id int) error {
+	return s.repo.Update(id)
 }
 
 func (s *ScoreService) Delete(id int) error {

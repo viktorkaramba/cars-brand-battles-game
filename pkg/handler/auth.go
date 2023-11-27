@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"fmt"
+	"bytes"
 	"github.com/gin-gonic/gin"
 	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
+	"io"
 	"net/http"
 )
 
@@ -20,10 +21,17 @@ import (
 // @Failure default {object} errorResponse
 // @Router /auth/sign-up [post]
 func (h *Handler) signUp(c *gin.Context) {
-	fmt.Println("in")
 	var input carsBrandsBattle.User
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid input body")
+		return
+	}
+
+	body, _ := io.ReadAll(c.Request.Body)
+	c.Request.Body = io.NopCloser(bytes.NewBuffer(body))
+	// Check if there are any additional fields in the JSON body
+	if err := h.validateJSONTags(body, carsBrandsBattle.User{}); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -72,7 +80,7 @@ type signInInput struct {
 func (h *Handler) signIn(c *gin.Context) {
 	var input signInInput
 	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, "invalid input body")
 		return
 	}
 

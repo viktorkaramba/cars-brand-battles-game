@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"bytes"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -28,7 +31,7 @@ func (h *Handler) createBrand(c *gin.Context) {
 
 	var input carsBrandsBattle.Brand
 	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
@@ -157,9 +160,16 @@ func (h *Handler) updateBrand(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
 		return
 	}
-	var input carsBrandsBattle.UpdateBrandInput
+	body, _ := io.ReadAll(c.Request.Body)
+	c.Request.Body = io.NopCloser(bytes.NewBuffer(body))
+	// Check if there are any additional fields in the JSON body
+	if err := h.validateJSONTags(body, carsBrandsBattle.UpdateBrandInput{}); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
-	if err := c.BindJSON(&input); err != nil {
+	input := carsBrandsBattle.UpdateBrandInput{}
+	if err := c.ShouldBindBodyWith(&input, binding.JSON); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}

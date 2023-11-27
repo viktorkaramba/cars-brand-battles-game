@@ -2,13 +2,8 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
 	"net/http"
 )
-
-type getGeneralUserStatisticsByScoreResponse struct {
-	Data []carsBrandsBattle.UserStatistics `json:data`
-}
 
 // @Summary Get General User Statistics By Score
 // @Security ApiKeyAuth

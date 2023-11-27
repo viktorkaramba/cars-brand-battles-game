@@ -28,14 +28,14 @@ type Battle interface {
 	Create(battle carsBrandsBattle.Battle) (int, error)
 	GetAll() ([]carsBrandsBattle.Battle, error)
 	GetById(id int) (*carsBrandsBattle.Battle, error)
-	Update(id int, battle carsBrandsBattle.UpdateBattleInput) error
+	Update(id int) error
 	Delete(id int) error
 }
 
 type Score interface {
 	GetAll() ([]carsBrandsBattle.Score, error)
 	GetById(id int) (*carsBrandsBattle.Score, error)
-	Update(id int, score carsBrandsBattle.UpdateScoreInput) error
+	Update(id int) error
 	Delete(id int) error
 }
 

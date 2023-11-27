@@ -27,11 +27,8 @@ func (s *BattleService) GetById(id int) (*carsBrandsBattle.Battle, error) {
 	return s.repo.GetById(id)
 }
 
-func (s *BattleService) Update(id int, battle carsBrandsBattle.UpdateBattleInput) error {
-	if err := battle.Validate(); err != nil {
-		return err
-	}
-	return s.repo.Update(id, battle)
+func (s *BattleService) Update(id int) error {
+	return s.repo.Update(id)
 }
 
 func (s *BattleService) Delete(id int) error {

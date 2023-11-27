@@ -2,14 +2,9 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	carsBrandsBattle "github.com/viktorkaramba/cars-brand-random-generator-app"
 	"net/http"
 	"strconv"
 )
-
-type getAllScoreResponse struct {
-	Data []carsBrandsBattle.Score `json:data`
-}
 
 // @Summary Get All Scores
 // @Security ApiKeyAuth
@@ -35,9 +30,7 @@ func (h *Handler) getAllScore(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, getAllScoreResponse{
-		Data: scores,
-	})
+	c.JSON(http.StatusOK, scores)
 }
 
 // @Summary Get Score By Id
@@ -96,14 +89,8 @@ func (h *Handler) updateScore(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
 		return
 	}
-	var input carsBrandsBattle.UpdateScoreInput
 
-	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	if err := h.services.Score.Update(id, input); err != nil {
+	if err := h.services.Score.Update(id); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
